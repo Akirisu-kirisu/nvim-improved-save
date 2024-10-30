@@ -1,6 +1,3 @@
--- lua/my_noice_plugin/init.lua
-local noice = require("noice")
-
 -- Function to check for errors in a specific buffer
 local function check_errors(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()  -- Use the current buffer if none is provided
@@ -27,7 +24,6 @@ function _G.save_and_check_all()
   if not has_errors then
     vim.cmd("wqa")
   else
-    noice.notify({ message = "Some buffers contain errors. Please fix them before closing.", level = "error" })
     vim.cmd("Trouble diagnostics focus=true filter.severity=vim.diagnostic.severity.ERROR")
   end
 end
@@ -37,7 +33,6 @@ function _G.save_and_check_current()
   if not check_errors() then
     vim.cmd("w")
   else
-    noice.notify({ message = "Current buffer contains errors. Please fix them before saving.", level = "error" })
     vim.cmd("Trouble diagnostics focus=true filter.severity=vim.diagnostic.severity.ERROR")
   end
 end
@@ -53,8 +48,6 @@ local function setup_autocmds()
   vim.api.nvim_create_autocmd("InsertLeave", {
     callback = function()
       if check_errors() then
-        noice.notify({ message = "Buffer contains errors.", level = "error" })
-        vim.cmd("TroubleToggle document_diagnostics")
         vim.cmd("Trouble diagnostics focus=true filter.severity=vim.diagnostic.severity.ERROR")
       end
     end,
