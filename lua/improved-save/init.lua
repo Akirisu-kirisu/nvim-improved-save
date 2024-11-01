@@ -1,6 +1,13 @@
 -- Function to check for errors in a specific buffer
 local function check_errors(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()  -- Use the current buffer if none is provided
+
+  -- Check if there is an LSP client attached to the buffer
+  local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+  if #clients == 0 then
+    return false  -- No LSP attached, no errors to check
+  end
+
   local diagnostics = vim.diagnostic.get(bufnr)
 
   for _, diag in ipairs(diagnostics) do
@@ -24,7 +31,7 @@ function _G.save_and_check_all()
   if not has_errors then
     vim.cmd("wqa")
   else
-    vim.cmd("Trouble diagnostics focus=true filter.severity=vim.diagnostic.severity.ERROR")
+    vim.cmd("Trouble diagnostics  win.position=right  focus=true filter.severity=vim.diagnostic.severity.ERROR")
   end
 end
 
@@ -33,7 +40,7 @@ function _G.save_and_check_current()
   if not check_errors() then
     vim.cmd("w")
   else
-    vim.cmd("Trouble diagnostics focus=true filter.severity=vim.diagnostic.severity.ERROR")
+    vim.cmd("Trouble diagnostics  win.position=right focus=true filter.severity=vim.diagnostic.severity.ERROR")
   end
 end
 
@@ -48,7 +55,7 @@ local function setup_autocmds()
   vim.api.nvim_create_autocmd("InsertLeave", {
     callback = function()
       if check_errors() then
-        vim.cmd("Trouble diagnostics focus=true filter.severity=vim.diagnostic.severity.ERROR")
+        vim.cmd("Trouble diagnostics focus=true  win.position=right  filter.severity=vim.diagnostic.severity.ERROR")
       end
     end,
   })
