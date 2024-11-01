@@ -31,7 +31,7 @@ function _G.save_and_check_all()
   if not has_errors then
     vim.cmd("wqa")
   else
-    vim.cmd("Trouble diagnostics  win.position=right  focus=true filter.severity=vim.diagnostic.severity.ERROR")
+    vim.cmd("Trouble diagnostics  win.position=right   filter.severity=vim.diagnostic.severity.ERROR")
   end
 end
 
@@ -40,7 +40,7 @@ function _G.save_and_check_current()
   if not check_errors() then
     vim.cmd("w")
   else
-    vim.cmd("Trouble diagnostics  win.position=right focus=true filter.severity=vim.diagnostic.severity.ERROR")
+    vim.cmd("Trouble diagnostics  win.position=right  filter.severity=vim.diagnostic.severity.ERROR")
   end
 end
 
@@ -55,7 +55,7 @@ local function setup_autocmds()
   vim.api.nvim_create_autocmd("InsertLeave", {
     callback = function()
       if check_errors() then
-        vim.cmd("Trouble diagnostics focus=true  win.position=right  filter.severity=vim.diagnostic.severity.ERROR")
+        vim.cmd("Trouble diagnostics   win.position=right  filter.severity=vim.diagnostic.severity.ERROR")
       end
     end,
   })
